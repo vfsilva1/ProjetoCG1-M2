@@ -35,6 +35,7 @@ public class Rutherford
         new Rutherford();
     }
     private double g = 0;
+    private double g2;
     
     
     public Rutherford()
@@ -80,15 +81,22 @@ public class Rutherford
         );
         
         gl.glLoadIdentity();
-        gl.glTranslated(0,0,-50);
-     
+        gl.glTranslated(0,0,-60);
+                
         gl.glRotated(g, 0, 1, 0);
+        
+        gl.glPushMatrix();
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
         desenhaNucleo(gl, glut, g);
         
         desenhaOrbita(gl, glut);
         
-        
-        g = g + 4;
+        g = g + 0.5;
+        g2 = g2 + 2;
     }
 
     public void reshape(GLAutoDrawable gLAutoDrawable, int x, int y, int w, int h) {
@@ -113,40 +121,37 @@ public class Rutherford
     }
 
     private void desenhaNucleo(GL2 gl, GLUT glut, double g) {
+        gl.glPushMatrix();     
+       gl.glTranslated(0, 0, -2.5);
+       
+       for(int i = 0; i < 2; i++)
+       {
         gl.glPushMatrix();
-            gl.glRotated(g, 0, 1, 0);
-            glut.glutWireSphere(2.5, 20, 20);
-
-            gl.glPushMatrix();
-                gl.glTranslated(5, 0, 0);
-                glut.glutWireSphere(2.5, 20, 20);
-            gl.glPopMatrix();
-
-            gl.glPushMatrix();
-                gl.glTranslated(-5, 0, 0);
-                glut.glutWireSphere(2.5, 20, 20);
-            gl.glPopMatrix();
-
-            gl.glPushMatrix();
-                gl.glTranslated(0, 5, 0);
-                glut.glutWireSphere(2.5, 20, 20);
-            gl.glPopMatrix();
-
-            gl.glPushMatrix();
-                gl.glTranslated(0, -5, 0);
-                glut.glutWireSphere(2.5, 20, 20);
-            gl.glPopMatrix();
-
-            gl.glPushMatrix();
-                gl.glTranslated(0, 0, 5);
-                glut.glutWireSphere(2.5, 20, 20);
-            gl.glPopMatrix();
-
-            gl.glPushMatrix();
-                gl.glTranslated(0, 0, -5);
-                glut.glutWireSphere(2.5, 20, 20);
-            gl.glPopMatrix();
+            gl.glRotated(g, 0, 1, 1);
+            
+            gl.glTranslated(-2.5, -2.5, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(0, 5, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(5, 0, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(0, -5, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(-2.5, -5, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(0, 15, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
         gl.glPopMatrix();
+        
+        gl.glTranslated(0, 0, 5);
+       }
+       gl.glPopMatrix();
     }
 
     private void desenhaOrbita(GL2 gl, GLUT glut) {

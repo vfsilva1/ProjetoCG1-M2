@@ -5,7 +5,11 @@ package ProjetoCG;
  * and open the template in the editor.
  */
 
-
+/**
+ * @author Vitor
+ *
+ * 
+ */
 
 
 import com.jogamp.opengl.util.Animator;

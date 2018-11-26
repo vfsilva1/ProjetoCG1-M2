@@ -14,6 +14,7 @@ package ProjetoCG;
 
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.media.opengl.GL;
@@ -40,6 +41,7 @@ public class Rutherford
     }
     private double g = 0;
     private double g2;
+    private boolean desenhar = false;
     
     
     public Rutherford()
@@ -89,15 +91,13 @@ public class Rutherford
                 
         gl.glRotated(g, 0, 1, 0);
         
-        gl.glPushMatrix();
-            gl.glRotated(g2, 1, 0, 0);
-            gl.glTranslated(0, 25, 0);
-            glut.glutSolidSphere(1.1, 20, 20);
-        gl.glPopMatrix();
+//        if(desenhar) {
+//            desenhaOrbitaCarbono(gl, glut);
+//            desenhaNucleoCarbono(gl, glut, g);
+//        }
         
-        desenhaNucleo(gl, glut, g);
-        
-        desenhaOrbita(gl, glut);
+        desenhaOrbitaCarbono(gl, glut);
+        desenhaNucleoCarbono(gl, glut, g);
         
         g = g + 0.5;
         g2 = g2 + 2;
@@ -124,14 +124,14 @@ public class Rutherford
         
     }
 
-    private void desenhaNucleo(GL2 gl, GLUT glut, double g) {
-        gl.glPushMatrix();     
+    private void desenhaNucleoCarbono(GL2 gl, GLUT glut, double g) {
+       gl.glPushMatrix();     
        gl.glTranslated(0, 0, -2.5);
        
        for(int i = 0; i < 2; i++)
        {
         gl.glPushMatrix();
-            gl.glRotated(g, 0, 1, 1);
+            //gl.glRotated(g, 0, 1, 1);
             
             gl.glTranslated(-2.5, -2.5, 0);
             glut.glutSolidSphere(2.5, 20, 20);
@@ -158,14 +158,69 @@ public class Rutherford
        gl.glPopMatrix();
     }
 
-    private void desenhaOrbita(GL2 gl, GLUT glut) {
+    private void desenhaOrbitaCarbono(GL2 gl, GLUT glut) {
+        gl.glPushMatrix();
+            gl.glRotated(45, 0, 0, 1);
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+            gl.glRotated(-135, 0, 0, 1);
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+            gl.glRotated(-45, 0, 0, 1);
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+            gl.glRotated(135, 0, 0, 1);
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+            gl.glRotated(45, 0, 0, 1);
+            gl.glRotated(90, 1, 0, 0);
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+            gl.glRotated(45, 0, 0, 1);
+            gl.glRotated(-90, 1, 0, 0);
+            gl.glRotated(g2, 1, 0, 0);
+            gl.glTranslated(0, 25, 0);
+            glut.glutSolidSphere(1.1, 20, 20);
+        gl.glPopMatrix();
+        
         gl.glRotated(90, 1, 0, 0);
         gl.glRotated(45, 0, 1, 0);
         glut.glutWireTorus(0, 25, 30, 30);
         gl.glRotated(45, 0, 1, 0);
-        glut.glutWireTorus(0, 25, 30, 30);
+        //glut.glutWireTorus(0, 25, 30, 30);
         gl.glRotated(45, 0, 1, 0);
         glut.glutWireTorus(0, 25, 30, 30);
+    }
+    
+    public void keyTyped(KeyEvent e) {
+
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_UP) {
+            desenhar = true;
+            
+        } 
     }
 }
 

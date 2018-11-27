@@ -14,23 +14,20 @@ package ProjetoCG;
 
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.gl2.GLUT;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  *
  * @author Glauco
  */
-public class Rutherford 
-        implements GLEventListener {
+public class Rutherford implements GLEventListener {
 
     GLU glu = new GLU();
     GLUT glut = new GLUT();
@@ -42,7 +39,7 @@ public class Rutherford
     private double g = 0;
     private double g2;
     private boolean desenhar = false;
-    
+    private float[] pos = {0, 0, 100, 0};
     
     public Rutherford()
     {
@@ -73,9 +70,32 @@ public class Rutherford
     public void init(GLAutoDrawable glAuto) {
         Animator a = new Animator(glAuto);
         a.start();
-        GL gl = glAuto.getGL();
-        gl.glClearColor(0.4f, 0.4f, 0.4f, 0.4f);
+        GL2 gl = glAuto.getGL().getGL2();
+        gl.glClearColor(0.2f, 0.2f, 0.2f, 0.2f);
+        glut = new GLUT();
+        
+        //Habilita o teste de profundidade
         gl.glEnable(GL.GL_DEPTH_TEST);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT1);
+        
+        
+        float luzEspecular[] = {1,1,1,1};
+        float luzDifusa[]  ={1f,1f,1f,1.0f};
+        float luzAmbiente[]  ={0.1f,0.1f,0.1f,1.0f};
+        
+        gl.glLightfv(GL2.GL_LIGHT1, 
+                     GL2.GL_DIFFUSE, 
+                     luzDifusa,0); 
+
+        gl.glLightfv(GL2.GL_LIGHT1, 
+                     GL2.GL_AMBIENT,
+                     luzAmbiente,0); 
+        
+        
+        gl.glLightfv(GL2.GL_LIGHT1, 
+                     GL2.GL_SPECULAR,
+                     luzEspecular,0); 
     }
 
     @Override
@@ -85,8 +105,13 @@ public class Rutherford
         gl.glClear(GL.GL_COLOR_BUFFER_BIT |
                    GL.GL_DEPTH_BUFFER_BIT
         );
-        
         gl.glLoadIdentity();
+        gl.glLightfv(GL2.GL_LIGHT1,
+                     GL2.GL_POSITION,
+                     pos,
+                     0);
+        
+        
         gl.glTranslated(0,0,-60);
                 
         gl.glRotated(g, 0, 1, 0);
@@ -95,6 +120,31 @@ public class Rutherford
 //            desenhaOrbitaCarbono(gl, glut);
 //            desenhaNucleoCarbono(gl, glut, g);
 //        }
+        
+        float matDifusa[]  ={0f,0,1f,1.0f};
+        float materialAmbiente[] ={0.25f,0,0,1};
+        float materialEspecular[] ={1,1,1,1};
+        float brilho = 40;
+        
+        gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_DIFFUSE,
+                        matDifusa,
+                        0);
+       
+        gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_AMBIENT,
+                        materialAmbiente,
+                        0);
+        
+        gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_SPECULAR,
+                        materialEspecular,
+                        0);
+        
+        gl.glMaterialf(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_SHININESS,
+                        brilho
+                        );
         
         desenhaOrbitaCarbono(gl, glut);
         desenhaNucleoCarbono(gl, glut, g);

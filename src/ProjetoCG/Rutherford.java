@@ -27,7 +27,7 @@ import javax.swing.*;
  *
  * @author Glauco
  */
-public class Rutherford implements GLEventListener {
+public class Rutherford implements GLEventListener, KeyListener{
 
     GLU glu = new GLU();
     GLUT glut = new GLUT();
@@ -40,6 +40,10 @@ public class Rutherford implements GLEventListener {
     private double g2;
     private boolean desenhar = false;
     private float[] pos = {0, 0, 100, 0};
+    private boolean right;
+    private boolean left;
+    
+    
     
     public Rutherford()
     {
@@ -50,7 +54,8 @@ public class Rutherford implements GLEventListener {
         frame.setSize(700, 700);
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
-      
+        frame.addKeyListener(this);
+        
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -61,10 +66,7 @@ public class Rutherford implements GLEventListener {
                 }).start();
             }
         });
-
-    
     }
-    
     
     @Override
     public void init(GLAutoDrawable glAuto) {
@@ -113,13 +115,13 @@ public class Rutherford implements GLEventListener {
         
         
         gl.glTranslated(0,0,-60);
-                
-        gl.glRotated(g, 0, 1, 0);
         
-//        if(desenhar) {
-//            desenhaOrbitaCarbono(gl, glut);
-//            desenhaNucleoCarbono(gl, glut, g);
-//        }
+        if(right)
+            g = g + 4;
+        if(left)
+            g = g - 4;
+        
+        gl.glRotated(g, 0, 1, 0);
         
         float matDifusa[]  ={0f,0,1f,1.0f};
         float materialAmbiente[] ={0.25f,0,0,1};
@@ -149,7 +151,6 @@ public class Rutherford implements GLEventListener {
         desenhaOrbitaCarbono(gl, glut);
         desenhaNucleoCarbono(gl, glut, g);
         
-        g = g + 0.5;
         g2 = g2 + 2;
     }
 
@@ -175,36 +176,44 @@ public class Rutherford implements GLEventListener {
     }
 
     private void desenhaNucleoCarbono(GL2 gl, GLUT glut, double g) {
-       gl.glPushMatrix();     
-       gl.glTranslated(0, 0, -2.5);
+       gl.glPushMatrix(); 
        
-       for(int i = 0; i < 2; i++)
-       {
-        gl.glPushMatrix();
-            //gl.glRotated(g, 0, 1, 1);
-            
-            gl.glTranslated(-2.5, -2.5, 0);
+            gl.glRotated(g2, 1, 1, 1);
+            gl.glTranslated(0, 0, -2.5);
+            for(int i = 0; i < 2; i++)
+            {
+                 gl.glPushMatrix();
+
+                     gl.glTranslated(-2.5, -2.5, 0);
+                     glut.glutSolidSphere(2.5, 20, 20);
+
+                     gl.glTranslated(0, 5, 0);
+                     glut.glutSolidSphere(2.5, 20, 20);
+
+                     gl.glTranslated(5, 0, 0);
+                     glut.glutSolidSphere(2.5, 20, 20);
+
+                     gl.glTranslated(0, -5, 0);
+                     glut.glutSolidSphere(2.5, 20, 20);
+
+                 gl.glPopMatrix();
+
+                 gl.glTranslated(0, 0, 5);
+            }
+            gl.glPushMatrix();
+                 gl.glTranslated(0, 0, -2);
+                 glut.glutSolidSphere(2.5, 20, 20);
+            gl.glPopMatrix();
+
+            gl.glTranslated(0, 0, -13);
             glut.glutSolidSphere(2.5, 20, 20);
-            
-            gl.glTranslated(0, 5, 0);
+
+            gl.glTranslated(5.5, 0, 6);
             glut.glutSolidSphere(2.5, 20, 20);
-            
-            gl.glTranslated(5, 0, 0);
+
+            gl.glTranslated(-11, 0, 0);
             glut.glutSolidSphere(2.5, 20, 20);
-            
-            gl.glTranslated(0, -5, 0);
-            glut.glutSolidSphere(2.5, 20, 20);
-            
-            gl.glTranslated(-2.5, -5, 0);
-            glut.glutSolidSphere(2.5, 20, 20);
-            
-            gl.glTranslated(0, 15, 0);
-            glut.glutSolidSphere(2.5, 20, 20);
-            
-        gl.glPopMatrix();
-        
-        gl.glTranslated(0, 0, 5);
-       }
+       
        gl.glPopMatrix();
     }
 
@@ -261,16 +270,26 @@ public class Rutherford implements GLEventListener {
         gl.glRotated(45, 0, 1, 0);
         glut.glutWireTorus(0, 25, 30, 30);
     }
-    
-    public void keyTyped(KeyEvent e) {
 
+    @Override
+    public void keyTyped(KeyEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_UP) {
-            desenhar = true;
-            
-        } 
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+            right = true;
+        if(e.getKeyCode() == KeyEvent.VK_LEFT)
+            left = true;
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+            right = false;
+        if(e.getKeyCode() == KeyEvent.VK_LEFT)
+            left = false;
     }
 }
 

@@ -14,6 +14,7 @@ package ProjetoCG;
 
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
@@ -43,15 +44,19 @@ public class Rutherford implements GLEventListener, KeyListener{
     private boolean right;
     private boolean left;
     
-    
+    Toolkit tk = Toolkit.getDefaultToolkit();
+    int xSize = (int) tk.getScreenSize().getWidth();
+    int ySize = (int) tk.getScreenSize().getHeight();
     
     public Rutherford()
     {
         GLJPanel canvas = new GLJPanel();
         canvas.addGLEventListener(this);
         
+        
+        
         JFrame frame = new JFrame("Exemplo01");
-        frame.setSize(700, 700);
+        frame.setSize(xSize, ySize);
         frame.getContentPane().add(canvas);
         frame.setVisible(true);
         frame.addKeyListener(this);
@@ -102,7 +107,9 @@ public class Rutherford implements GLEventListener, KeyListener{
 
     @Override
     public void display(GLAutoDrawable glAuto) {
-
+        
+        
+        
         GL2 gl = glAuto.getGL().getGL2();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT |
                    GL.GL_DEPTH_BUFFER_BIT
@@ -113,7 +120,7 @@ public class Rutherford implements GLEventListener, KeyListener{
                      pos,
                      0);
         
-        
+        gl.glPushMatrix();
         gl.glTranslated(0,0,-60);
         
         if(right)
@@ -123,7 +130,7 @@ public class Rutherford implements GLEventListener, KeyListener{
         
         gl.glRotated(g, 0, 1, 0);
         
-        float matDifusa[]  ={0f,0,1f,1.0f};
+        float matDifusa[]  ={1f,0f,0f,1.0f};
         float materialAmbiente[] ={0.25f,0,0,1};
         float materialEspecular[] ={1,1,1,1};
         float brilho = 40;
@@ -150,6 +157,29 @@ public class Rutherford implements GLEventListener, KeyListener{
         
         desenhaOrbitaCarbono(gl, glut);
         desenhaNucleoCarbono(gl, glut, g);
+
+        
+        gl.glPopMatrix();
+        
+        gl.glDisable(GL2.GL_LIGHTING);
+        gl.glDisable(GL2.GL_TEXTURE_2D);
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+        glu.gluOrtho2D(0.0, 1920, 0.0, 1080);
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+        gl.glRasterPos2i(xSize / 2 - 50, ySize + 110);
+        glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "MODELO ATOMICO DE RUTHERFORD");
+        gl.glRasterPos2i(xSize / 2 + 130, ySize + 60);
+        glut.glutBitmapString(GLUT.BITMAP_TIMES_ROMAN_24, "CARBONO");
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glPopMatrix();
+        gl.glEnable(GL.GL_TEXTURE_2D);      
+        gl.glEnable(GL2.GL_LIGHTING);
         
         g2 = g2 + 2;
     }
@@ -159,7 +189,7 @@ public class Rutherford implements GLEventListener, KeyListener{
         GL2 gl = gLAutoDrawable.getGL().getGL2(); 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(60,1,1,300);
+        glu.gluPerspective(60,(float) w / h,1,300);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         gl.glTranslated(0,0,-10);
@@ -176,30 +206,51 @@ public class Rutherford implements GLEventListener, KeyListener{
     }
 
     private void desenhaNucleoCarbono(GL2 gl, GLUT glut, double g) {
-       gl.glPushMatrix(); 
+        float matDifusa2[]  = {0f ,0f ,1f ,1.0f};
+        float matDifusa3[]  = {1f , 1f, 0f, 1f}; //amarelo
+        gl.glPushMatrix(); 
        
+            gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_DIFFUSE,
+                        matDifusa2,
+                        0);
+            
             gl.glRotated(g2, 1, 1, 1);
             gl.glTranslated(0, 0, -2.5);
             for(int i = 0; i < 2; i++)
             {
                  gl.glPushMatrix();
+                     
+                  gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_DIFFUSE,
+                        matDifusa2,
+                        0);
+                    gl.glTranslated(-2.5, -2.5, 0);
+                    glut.glutSolidSphere(2.5, 20, 20);
 
-                     gl.glTranslated(-2.5, -2.5, 0);
-                     glut.glutSolidSphere(2.5, 20, 20);
-
-                     gl.glTranslated(0, 5, 0);
-                     glut.glutSolidSphere(2.5, 20, 20);
-
-                     gl.glTranslated(5, 0, 0);
-                     glut.glutSolidSphere(2.5, 20, 20);
-
-                     gl.glTranslated(0, -5, 0);
-                     glut.glutSolidSphere(2.5, 20, 20);
+                    gl.glTranslated(0, 5, 0);
+                    glut.glutSolidSphere(2.5, 20, 20);
+                    
+                    gl.glTranslated(5, 0, 0);
+                    glut.glutSolidSphere(2.5, 20, 20);
+                    
+                       gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_DIFFUSE,
+                        matDifusa3,
+                        0);
+                    gl.glTranslated(0, -5, 0);
+                    glut.glutSolidSphere(2.5, 20, 20);
 
                  gl.glPopMatrix();
 
                  gl.glTranslated(0, 0, 5);
             }
+            
+            gl.glMaterialfv(GL.GL_FRONT_AND_BACK,
+                        GL2.GL_DIFFUSE,
+                        matDifusa3,
+                        0);
+            
             gl.glPushMatrix();
                  gl.glTranslated(0, 0, -2);
                  glut.glutSolidSphere(2.5, 20, 20);
@@ -216,7 +267,31 @@ public class Rutherford implements GLEventListener, KeyListener{
        
        gl.glPopMatrix();
     }
-
+    
+     private void desenhaNeutronCarbono(GL2 gl, GLUT glut, double g) {
+       gl.glPushMatrix();     
+       gl.glTranslated(0, 0, -2.5);
+       
+        for(int i = 0; i < 2; i++)
+        {
+          gl.glPushMatrix();
+            
+            gl.glTranslated(-2.5, -2.5, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(-5, 5, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+            gl.glTranslated(0, -10, 0);
+            glut.glutSolidSphere(2.5, 20, 20);
+            
+          gl.glPopMatrix();
+        
+        gl.glTranslated(0, 0, 5);
+       }
+       gl.glPopMatrix();
+    }
+    
     private void desenhaOrbitaCarbono(GL2 gl, GLUT glut) {
         gl.glPushMatrix();
             gl.glRotated(45, 0, 0, 1);
@@ -271,6 +346,11 @@ public class Rutherford implements GLEventListener, KeyListener{
         glut.glutWireTorus(0, 25, 30, 30);
     }
 
+    private void drawText(int x, int y, String text)
+    {
+        
+    }
+    
     @Override
     public void keyTyped(KeyEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
